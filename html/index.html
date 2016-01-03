@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+
+    <link href="../css/style-promo.css"  rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div class="wrap">
+    <section class="loading">
+        <div class="process">
+            这是一个萌萌哒的加载页
+        </div>
+        <div class="process" id="count">
+
+        </div>
+        <span id="count" class="process"></span>
+    </section>
+    <section class="screen screen1">
+        <div class="screen-arrow">
+            <div id="WxMomentVideo" style="width: 100%; height: 500px;margin-top: 10%"></div>
+        </div>
+    </section>
+    <section class="screen screen2">
+        <div class="screen-arrow">
+            <form class="white-pink">
+                <h1>模拟留言板
+                    <span>Please fill all the texts in the fields.</span>
+                </h1>
+                <label>
+                    <span>姓名 :</span>
+                    <input id="name" type="text" name="name" placeholder="请输入您的姓名" />
+                </label>
+                <label>
+                    <span>电子邮件 :</span>
+                    <input id="email" type="text" name="email" placeholder="请输入您的电子邮件" />
+                </label>
+                <label>
+                    <span>留言信息:</span>
+                    <input id="message" type="text" name="message" placeholder="请输入您的留言信息" />
+                </label>
+                <label>
+                    <span>&nbsp;</span>
+                    <input type="submit" class="button" value="提交" />
+                </label>
+            </form>
+        </div>
+    </section>
+</div>
+</body>
+<script src="http://wximg.gtimg.com/wxp/libs/wxmoment/0.0.4/wxmoment.min.js"></script>
+<script>
+    $(function(){
+        //new WxMoment.OrientationTip();//这句代码的作用是让用户无法在多渠道查看，当用户在非微信端打开H5时，会提示“微信扫一扫，手机浏览效果更佳”，并给出二维码（注意：此时资源依然会加载）。
+        var basePath = "../";
+        var loader = new WxMoment.Loader();
+        //声明资源文件列表
+        var fileList = ['img/1.jpg', 'img/2.jpg', 'img/3.jpg', 'img/4.jpg', 'js/a.js'];
+        for (var i = 0; i < fileList.length - 1; i++) {
+            loader.addImage(basePath + fileList[i]);
+        }
+
+        //进度监听
+        loader.addProgressListener(function (e) {
+            var percent = Math.round((e.completedCount / e.totalCount) * 100);
+            //在这里做 Loading 页面中百分比的显示
+            setTimeout(function(){
+            }, 3000 );
+            alert("当前页面加载进度："+percent+"%");
+        });
+
+
+        //加载完成
+        loader.addCompletionListener(function (e) {
+            //可以在这里隐藏 Loading 页面开始进入主内容页面
+            $('.loading').hide();
+            var pageSlider = new WxMoment.PageSlider({
+                pages: $('.screen')
+            });
+            var video = new WxMoment.Video({
+                //请联系接口人确认视频清晰度已调至高清版本
+                //如果要定制“播放按钮”的样式，请使用 CSS 覆盖 .tvp_overlay_play 和 .tvp_button_play 即可
+                vid: "a0016gys8ct", //视频 vid 取自视频地址：http://v.qq.com/page/a/t/t/a0016gys8ct.html
+                pic: "../img/slt.png", //设置视频默认缩略图
+                oninited: function () {
+                    //播放器在视频载入完毕触发
+                    alert("视频加载完毕");
+                },
+                onplaying: function () {
+                    //播放器真正开始播放视频第一帧画面时
+                    alert("开始播放");
+                },
+                onpause: function () {
+                    //播放器触发暂停时，目前只针对HTML5播放器有效
+                    alert("暂停");
+                },
+                onresume: function () {
+                    //暂停后继续播放时触发
+                    alert("继续播放");
+                },
+                onallended: function () {
+                    //播放器播放完毕时
+                    alert("播放完成");
+                },
+                onfullscreen: function (isfull) {
+                    //onfullscreen(isfull) 播放器触发全屏/非全屏时，参数isfull表示当前是否是全屏
+                    //isfull==true?alert("是全屏"):alert("不是全屏");
+                }
+            });
+            $('form').submit(function () {
+                //获取字段数据
+                var name = $('#name').val();
+                var email = $('#email').val();
+                var message = $('#message').val();
+
+                //检验字段内容
+                if(!name || !email|| !message){
+                    alert('内容填写不完整！');
+                    return false;
+                }
+                //填写表单内容
+                var form = new WxMoment.Form({
+                    appid: 'wx0000000000000000',    //客户公众号appid，可在 微信公众平台->开发者中心 查看
+                    qid: 'xxx',                     //表单id，请与运营经理联系获取
+                    name: name,                     //表单内容，需先与运营经理沟通后配置所需提交的内容
+                    email: email,
+                    message: message
+                })
+                //提交表单
+                form.submit(function () {
+                    alert('seccess!')
+                }, function () {
+                    alert('failed!')
+                })
+                return false;
+            })
+        });
+        //启动加载
+        loader.start();
+    });
+
+
+
+</script>
+
+</html>
